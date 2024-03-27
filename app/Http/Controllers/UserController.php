@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Mail\WelcomeEmail;
 use DB;
-
+//added comment
 class UserController extends Controller
 {
     function apiStatus()
