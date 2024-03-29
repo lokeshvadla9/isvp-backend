@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Mail\WelcomeEmail;
+use App\Mail\WelcomeEmailProfessor;
+use App\Mail\ForgotPassword;
 use DB;
 
 class UserController extends Controller
@@ -43,10 +45,14 @@ class UserController extends Controller
             $isDeleted
         ]);
         $response=response()->json($result[0]);
-        if($userId==-1)
+        if($result[0]->status=="success"&&$userId==-1&&$userType==1)
         {
             $details=["name"=>$firstName];
             Mail::to($email)->send(new WelcomeEmail($details));
+        }
+        else if($result[0]->status=="success"&&$userId==-1&&$userType==2){
+            $details=["name"=>$firstName,"password"=>$password];
+            Mail::to($email)->send(new WelcomeEmailProfessor($details));
         }
         return $response;
     }
@@ -65,6 +71,31 @@ class UserController extends Controller
             return response()->json([
                 'Status' => 'error',
                 'Message' => 'An error occurred during login.'
+            ], 500);
+        }
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        try {
+            $result = DB::select('CALL sproc_ForgotPassword(?)', [$request->email]);
+
+            $firstName=$result[0]->first_name ?? null;
+            $password = $result[0]->password ?? null;
+            $status = $result[0]->status ?? null;
+            $message = $result[0]->message ?? null;
+            if($status=="success")
+            {
+                $details=["name"=>$firstName,"password"=>$password];
+                Mail::to($request->email)->send(new ForgotPassword($details));
+                return json_encode(["status"=>"success","Message"=>"Password has been sent to Email"]);
+            }
+            else{
+                return json_encode(["status"=>"failure","Message"=>"Email not registered with us"]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An error occurred while processing your request.',
             ], 500);
         }
     }
