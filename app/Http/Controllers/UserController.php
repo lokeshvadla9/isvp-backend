@@ -7,7 +7,7 @@ use App\Mail\WelcomeEmail;
 use App\Mail\WelcomeEmailProfessor;
 use App\Mail\ForgotPassword;
 use DB;
-
+//added comment
 class UserController extends Controller
 {
     function apiStatus()

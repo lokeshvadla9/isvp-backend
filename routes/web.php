@@ -3,9 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CorsMiddleware;
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/', [UserController::class, 'apiStatus']);
 Route::prefix('api')->middleware([CorsMiddleware::class])->group(function () {  
