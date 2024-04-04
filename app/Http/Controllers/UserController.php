@@ -99,4 +99,93 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function addSuperviseDetails(Request $request)
+    {
+        try{
+
+            $professorId = $request->input('professor_id');
+            $studentEmail = $request->input('student_email');
+
+            $result = DB::select('CALL sproc_AddSuperviseDetails(?, ?)', [$professorId, $studentEmail]);
+
+            if (!empty($result)) {
+                $status = $result[0]->status;
+                $message = $result[0]->message;
+                if ($status == 'success') {
+                    return response()->json(['status' => $status, 'message' => $message]);
+                } else {
+                    return response()->json(['status' => $status, 'message' => $message], 400);
+                }
+            } else {
+                return response()->json(['success' => "failure", 'message' => 'Failed to execute stored procedure'], 500);
+            }
+        }catch (\Exception $e) {
+            Log::error('Error occurred during addSuperviseDetails: ' . $e->getMessage());
+            return response()->json([
+                'status'=>'failure',
+                'error' => 'An error occurred while processing your request.',
+            ], 500);
+        }
+    }
+
+    public function getUserData(Request $request)
+    {
+        try {
+            $filter_Id = $request->input('filterId');
+            $filter_UserType = $request->input('filterUserType');
+
+            // Call the stored procedure
+            $userData = DB::select('CALL sproc_GetUserData(?, ?)', array($filter_Id, $filter_UserType));
+            if(count($userData)!=0){
+                return response()->json([
+                    'status' => 'success',
+                    'message'=>'Users detailes retrieved successfully',
+                    'data' => $userData
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'failure',
+                    'message'=>'No Data Found',
+                    'data' => null
+                ],404);
+            }
+            
+        } catch (QueryException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Database query error: ' . $e->getMessage(),
+                'data'=>null
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An unexpected error occurred: ' . $e->getMessage(),
+                'data'=>null
+            ], 500);
+        }
+    }
+
+    public function getSupervisorDetails($studentId)
+    {
+        try {
+            $supervisorDetails = DB::select('CALL sproc_GetSupervisorDetails(?)', [$studentId]);
+            if (count($supervisorDetails) != 0) {
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $supervisorDetails,
+                    'message' => 'Supervisor details retrieved successfully'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'failure',
+                    'data' => null,
+                    'message' => 'Looks, Supervisor not assigned'
+                ], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(), 'data' => null], 500);
+        }
+    }
 }
