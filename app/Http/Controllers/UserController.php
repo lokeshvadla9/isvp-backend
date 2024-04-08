@@ -188,4 +188,18 @@ class UserController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage(), 'data' => null], 500);
         }
     }
+
+    public function getStudentsByProfessorId(Request $request)
+    {
+        try {
+            $professor_id = $request->input('professor_id');
+            $students = DB::select('CALL sproc_GetStudentsByProfessorId(?)', [$professor_id]);
+            if (empty($students)) {
+                return response()->json(['status' => 'failure', 'message' => 'No students found for the given professor.', 'data' => []], 200);
+            }
+            return response()->json(['status' => 'success', 'data' => $students], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
 }
