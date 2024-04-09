@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
-use App\Http\COntrollers\QueryController;
+use App\Http\Controllers\QueryController;
 use App\Http\Middleware\CorsMiddleware;
 
 Route::get('/', [UserController::class, 'apiStatus']);
