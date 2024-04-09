@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
+use App\Http\COntrollers\QueryController;
 use App\Http\Middleware\CorsMiddleware;
 
 Route::get('/', [UserController::class, 'apiStatus']);
@@ -16,4 +17,7 @@ Route::prefix('api')->middleware([CorsMiddleware::class])->group(function () {
     Route::post('/user/getstudentdetailsbyprofessor',[UserController::class,'getStudentsByProfessorId'])->middleware('web');
     Route::post('/task/createurupdatetask',[TaskController::class,'createOrUpdateTaskAndAssignStudents'])->middleware('web');
     Route::post('/task/gettasks',[TaskController::class,'getTasks'])->middleware('web');
+    Route::post('/query/createquery',[QueryController::class,'createQuery'])->middleware('web');
+    Route::get('/query/getqueries',[QueryController::class,'getQueries'])->middleware('web');
+    Route::post('/query/updatequerystatus',[QueryController::class,'updateQueryStatus'])->middleware('web');
 });
