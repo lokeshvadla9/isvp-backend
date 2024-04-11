@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\QueryController;
 use App\Http\Controllers\CalenderController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Middleware\CorsMiddleware;
 
 Route::get('/', [UserController::class, 'apiStatus']);
@@ -20,9 +21,14 @@ Route::prefix('api')->middleware([CorsMiddleware::class])->group(function () {
     Route::post('/task/gettasks',[TaskController::class,'getTasks'])->middleware('web');
     Route::post('/task/submitweeklyreport',[TaskController::class,'insertWeeklyReport'])->middleware('web');
     Route::post('/task/getweeklyreports',[TaskController::class,'getWeeklyReports'])->middleware('web');
+    Route::post('/task/createorupdatecomment',[TaskController::class,'createOrUpdateComment'])->middleware('web');
+    Route::get('/task/getcommentbytask/{taskId}',[TaskController::class,'getCommentsByTask'])->middleware('web');
     Route::post('/query/createquery',[QueryController::class,'createQuery'])->middleware('web');
     Route::get('/query/getqueries',[QueryController::class,'getQueries'])->middleware('web');
     Route::post('/query/updatequerystatus',[QueryController::class,'updateQueryStatus'])->middleware('web');
     Route::get('/calender/getreminders/{userId}',[CalenderController::class,'getReminders'])->middleware('web');
-    Route::post('/calender/createreminder',[CalenderController::class,'createReminder'])->middleware('web');   
+    Route::post('/calender/createreminder',[CalenderController::class,'createReminder'])->middleware('web');
+    Route::post('/recommendation/createorupdaterecommendation',[RecommendationController::class,'createOrUpdateRecommendation'])->middleware('web');   
+    Route::post('/recommendation/downloadletter',[RecommendationController::class,'downloadRecommendationLetter'])->middleware('web');
+    Route::post('/recommendation/getrecommendationrequests',[RecommendationController::class,'getRecommendationRequests'])->middleware('web');  
 });

@@ -130,4 +130,65 @@ class TaskController extends Controller
         }
     }
 
+
+    public function createOrUpdateComment(Request $request)
+    {
+        try {
+            $comment_id = $request->input('comment_id');
+            $task_id = $request->input('task_id');
+            $comment_by = $request->input('comment_by');
+            $comment_text = $request->input('comment_text');
+            $comment_time = $request->input('comment_time');
+            $is_deleted=$request->input('is_deleted');
+
+            // Call the stored procedure
+            $result = DB::select('CALL sproc_CreateOrUpdateComment(?, ?, ?, ?, ?, ?)', [
+                $comment_id,
+                $task_id,
+                $comment_by,
+                $comment_text,
+                $comment_time,
+                $is_deleted
+            ]);
+
+            // Return the result
+            return response()->json($result[0]);
+        } catch (\Exception $e) {
+            // Handle exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getCommentsByTask($taskId)
+    {
+        try {
+            // Call the stored procedure
+            $comments = DB::select('CALL sproc_GetCommentsByTask(?)', array($taskId));
+
+            // Check if any comments were retrieved
+            if (!empty($comments)) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Comments retrieved successfully',
+                    'data' => $comments
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'failure',
+                    'message' => 'No comments found',
+                    'data' => []
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
