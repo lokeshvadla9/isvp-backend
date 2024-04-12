@@ -191,7 +191,7 @@ class TaskController extends Controller
         }
     }
 
-    function calculatePlaig(Request $request) {
+    public function calculatePlaig(Request $request) {
         // Initialize response object
         $response = [
             'status' => '',
