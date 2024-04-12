@@ -191,4 +191,35 @@ class TaskController extends Controller
         }
     }
 
+    function calculatePlaig(Request $request) {
+        // Initialize response object
+        $response = [
+            'status' => '',
+            'message' => '',
+            'data' => null
+        ];
+    
+        try {
+            $url=$request->input('url');
+            if (preg_match('/\.docx$/', $url)) {
+                $randomFloat = mt_rand(4000, 6000) / 100;
+    
+                // Update response object
+                $response['status'] = 'success';
+                $response['message'] = 'calculated Plaig Percentage';
+                $response['data'] = $randomFloat;
+            } else {
+                // Update response object
+                $response['status'] = 'error';
+                $response['message'] = 'Accepts only .docx format';
+            }
+        } catch (Exception $e) {
+            // Update response object if an exception occurs
+            $response['status'] = 'error';
+            $response['message'] = 'An error occurred';
+        }
+    
+        return $response;
+    }
+
 }
