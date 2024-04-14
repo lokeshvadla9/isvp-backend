@@ -24,6 +24,7 @@ Route::prefix('api')->middleware([CorsMiddleware::class])->group(function () {
     Route::post('/task/createorupdatecomment',[TaskController::class,'createOrUpdateComment'])->middleware('web');
     Route::get('/task/getcommentbytask/{taskId}',[TaskController::class,'getCommentsByTask'])->middleware('web');
     Route::post('/task/calculateplaig',[TaskController::class,'calculatePlaig'])->middleware('web');
+    Route::post('/task/createorupdatefeedback',[TaskController::class,'createOrUpdateFeedback'])->middleware('web');
     Route::post('/query/createquery',[QueryController::class,'createQuery'])->middleware('web');
     Route::get('/query/getqueries',[QueryController::class,'getQueries'])->middleware('web');
     Route::post('/query/updatequerystatus',[QueryController::class,'updateQueryStatus'])->middleware('web');

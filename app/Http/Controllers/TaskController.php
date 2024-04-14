@@ -222,4 +222,35 @@ class TaskController extends Controller
         return $response;
     }
 
+
+    public function createOrUpdateFeedback(Request $request)
+    {
+        try {
+            $id = $request->input('id');
+            $fk_weeklyReport_Id = $request->input('weekly_report_id');
+            $feedbackText = $request->input('feedback');
+            $timestamp = $request->input('timestamp');
+            $fk_Professor_Id = $request->input('professor_id');
+            
+            // Call the stored procedure
+            $result = DB::select('CALL sproc_CreateOrUpdateFeedback(?, ?, ?, ?, ?)', [
+                $id,
+                $fk_weeklyReport_Id,
+                $feedbackText,
+                $timestamp,
+                $fk_Professor_Id
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Feedback comments saved successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to insert/update feedback: ' . $e->getMessage()
+            ]);
+        }
+    }
+
 }
